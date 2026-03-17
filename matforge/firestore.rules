@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: artifacts/{appId}/users/{userId}/workout_logs
+    // Document ID: {date}_{exercise} or {date}_daily_stats
+    // Fields (WorkoutLog):
+    //   - date: string (required)
+    //   - phase: string
+    //   - day: string
+    //   - exercise: string (required)
+    //   - sets: list (required)
+    //   - timestamp: string
+    //
+    // Fields (DailyStats):
+    //   - isDailyStats: bool (required)
+    //   - date: string (required)
+    //   - bodyWeight: number
+    //   - caloriesBurned: number
+    //   - baseCalories: number
+    //   - timestamp: string
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email == "kidace707@gmail.com" ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', 'user') == 'admin')
+      );
+    }
+
+    match /artifacts/{appId}/users/{userId}/{subcollection}/{docId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+  }
+}

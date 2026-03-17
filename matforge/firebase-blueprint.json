@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "WorkoutLog": {
+      "title": "Workout Log",
+      "description": "A single training session log entry (Strength or BJJ).",
+      "type": "object",
+      "properties": {
+        "date": { "type": "string", "format": "date" },
+        "phase": { "type": "string" },
+        "day": { "type": "string" },
+        "type": { "type": "string", "enum": ["strength", "bjj"] },
+        "exercise": { "type": "string" },
+        "sets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "weight": { "type": "string" },
+              "reps": { "type": "string" },
+              "estimated1RM": { "type": "number" }
+            }
+          }
+        },
+        "rounds": { "type": "number" },
+        "subsAttempted": { "type": "number" },
+        "subsLanded": { "type": "number" },
+        "subsReceived": { "type": "number" },
+        "dominantPositions": { "type": "number" },
+        "escapesAttempted": { "type": "number" },
+        "escapesSuccessful": { "type": "number" },
+        "subType": { "type": "string" },
+        "hardestPart": { "type": "string" },
+        "whatWentWell": { "type": "string" },
+        "techniqueNotes": { "type": "string" },
+        "sessionLoad": { "type": "number" },
+        "caloriesBurned": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["date", "type", "timestamp"]
+    },
+    "RecoveryLog": {
+      "title": "Recovery Log",
+      "description": "Daily recovery check-in.",
+      "type": "object",
+      "properties": {
+        "date": { "type": "string", "format": "date" },
+        "sleep": { "type": "number" },
+        "energy": { "type": "number" },
+        "soreness": { "type": "number" },
+        "stress": { "type": "number" },
+        "score": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["date", "score"]
+    },
+    "DailyStats": {
+      "title": "Daily Stats",
+      "description": "Daily metabolic and body metrics.",
+      "type": "object",
+      "properties": {
+        "isDailyStats": { "type": "boolean" },
+        "date": { "type": "string", "format": "date" },
+        "bodyWeight": { "type": "number" },
+        "caloriesBurned": { "type": "number" },
+        "baseCalories": { "type": "number" },
+        "trainingLoad": { "type": "number" },
+        "recoveryScore": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["date", "isDailyStats"]
+    }
+  },
+  "firestore": {
+    "artifacts/{appId}/users/{userId}/workout_logs/{logId}": {
+      "schema": "WorkoutLog",
+      "description": "User workout logs and daily stats."
+    },
+    "artifacts/{appId}/users/{userId}/recovery_logs/{logId}": {
+      "schema": "RecoveryLog",
+      "description": "User recovery check-ins."
+    }
+  }
+}

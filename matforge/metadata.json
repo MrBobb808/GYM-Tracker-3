@@ -1,0 +1,5 @@
+{
+  "name": "MatForge",
+  "description": "Advanced training, gamification, and metabolic tracker for grapplers and combat athletes.",
+  "requestFramePermissions": ["microphone"]
+}
